@@ -8,8 +8,10 @@ struct MerchantListScreen: View {
 
     // Build the chip row: first is "All" (nil), then real categories
     private var chipItems: [CategoryItem] {
-        var items: [CategoryItem] = [.init(title: "All", icon: "square.grid.2x2", category: nil)]
-        items += MerchantCategory.allCases.map { cat in
+        var items: [CategoryItem] = [
+            .init(title: "All", icon: "square.grid.2x2", category: nil)
+        ]
+        items += MerchantCategory.browseOrder.map { cat in
             .init(title: chipTitle(for: cat), icon: chipIcon(for: cat), category: cat)
         }
         return items
@@ -17,7 +19,6 @@ struct MerchantListScreen: View {
 
     var body: some View {
         VStack(spacing: 12) {
-
             // Search bar
             HStack(spacing: 10) {
                 Image(systemName: "magnifyingglass").foregroundStyle(.secondary)
@@ -42,7 +43,7 @@ struct MerchantListScreen: View {
             }
 
             // Results list
-            List(filteredMerchants) { m in
+            List(store.filteredMerchants()) { m in
                 NavigationLink(destination: MerchantDetailView(merchant: m)) {
                     MerchantRow(merchant: m)
                 }
@@ -53,47 +54,6 @@ struct MerchantListScreen: View {
         }
         .navigationTitle("Browse")
         .onAppear { searchText = store.searchText }
-    }
-}
-
-// MARK: - Filtering
-
-private extension MerchantListScreen {
-    var filteredMerchants: [Merchant] {
-        let needle = store.searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-
-        return store.merchants.filter { m in
-            // Category filter
-            if let cat = store.selectedCategory, m.category != cat { return false }
-
-            // Text filter (name + address)
-            if !needle.isEmpty {
-                // address is non-optional in your model
-                let haystack = (m.name + " " + m.address).lowercased()
-                if !haystack.contains(needle) { return false }
-            }
-            return true
-        }
-    }
-
-    func chipTitle(for cat: MerchantCategory) -> String {
-        switch cat {
-        case .restaurants:   return "Restaurants"
-        case .desserts:      return "Desserts"
-        case .entertainment: return "Life & Entertainment"  // FIX: full title
-        case .shopping:      return "Shopping"
-        case .specials:      return "Specials"
-        }
-    }
-
-    func chipIcon(for cat: MerchantCategory) -> String {
-        switch cat {
-        case .restaurants:   return "fork.knife"
-        case .desserts:      return "cup.and.saucer"
-        case .entertainment: return "sparkles"
-        case .shopping:      return "bag"
-        case .specials:      return "percent"
-        }
     }
 }
 
@@ -114,20 +74,13 @@ private struct CategoryChip: View {
 
     var body: some View {
         Button {
-            // toggle to nil when tapping the same chip (like Uber’s “All”)
-            if selection == item.category {
-                selection = nil
-            } else {
-                selection = item.category
-            }
+            selection = (selection == item.category) ? nil : item.category
         } label: {
             HStack(spacing: 8) {
                 Image(systemName: item.icon)
                     .imageScale(.medium)
                 Text(item.title)
                     .font(.callout.weight(.semibold))
-                    .lineLimit(1)
-                    .fixedSize(horizontal: true, vertical: false) // prevents truncation
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
@@ -151,7 +104,7 @@ private struct CategoryChip: View {
     }
 }
 
-// MARK: - Minimal in-file row (fixes "Cannot find MerchantRow in scope")
+// MARK: - Minimal in-file row
 
 private struct MerchantRow: View {
     let merchant: Merchant
@@ -162,13 +115,14 @@ private struct MerchantRow: View {
                 .font(.headline)
                 .foregroundStyle(.blue)
 
+            // “Category • Subtitle” line
             HStack(spacing: 6) {
-                Text(merchant.subtitle ?? merchant.category.rawValue)
+                Text(merchant.categories.first?.rawValue ?? "—")
                     .foregroundStyle(.secondary)
-                Text("·")
-                    .foregroundStyle(.tertiary)
-                Text(merchant.category.rawValue)
-                    .foregroundStyle(.secondary)
+                if let sub = merchant.subtitle, !sub.isEmpty {
+                    Text("·").foregroundStyle(.tertiary)
+                    Text(sub).foregroundStyle(.secondary)
+                }
             }
             .font(.subheadline)
 
@@ -184,5 +138,27 @@ private struct MerchantRow: View {
                 .lineLimit(2)
         }
         .padding(.vertical, 8)
+    }
+}
+
+// MARK: - Helpers (titles/icons)
+
+private func chipTitle(for cat: MerchantCategory) -> String {
+    switch cat {
+    case .restaurants:   return "Restaurants"
+    case .desserts:      return "Desserts"
+    case .entertainment: return "Life…"
+    case .shopping:      return "Shopping"
+    case .specials:      return "Specials"
+    }
+}
+
+private func chipIcon(for cat: MerchantCategory) -> String {
+    switch cat {
+    case .restaurants:   return "fork.knife"
+    case .desserts:      return "cup.and.saucer"
+    case .entertainment: return "sparkles"
+    case .shopping:      return "bag"
+    case .specials:      return "percent"
     }
 }
