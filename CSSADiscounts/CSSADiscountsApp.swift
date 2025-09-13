@@ -1,17 +1,15 @@
-//
-//  CSSADiscountsApp.swift
-//  CSSADiscounts
-//
-//  Created by Enting Zhu on 2025-09-12.
-//
-
 import SwiftUI
 
 @main
 struct CSSADiscountsApp: App {
+    @StateObject private var store = MerchantStore()
+    @StateObject private var location = LocationManager()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .environmentObject(store)
+                .environmentObject(location)
         }
     }
 }
