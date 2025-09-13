@@ -16,7 +16,7 @@
   {
     "name": "OUIFIT Fitness",
     "subtitle": "Fitness & Wellness",
-    "category": "Life & Entertainment",
+    "categories": ["Life & Entertainment", "Special Offers"],
     "discountText": "10% OFF any payment method, and 2 free courses with 12-course bundle",
     "address": "1117 Saint-Catherine St W Unit 100, Montreal, Quebec H3B 1H9",
     "phone": "514-518-6651",
@@ -30,7 +30,7 @@
   {
     "name": "T&T Supermarket",
     "subtitle": "Grocery",
-    "category": "Shopping",
+    "categories": ["Shopping", "Special Offers"],
     "discountText": "Coupon: $10 off over $69, up to 10× per account",
     "address": "300 Sainte Croix Ave, Montreal, Quebec H4N 3K4",
     "phone": "514-747-1240",

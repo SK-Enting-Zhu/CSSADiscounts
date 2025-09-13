@@ -1,8 +1,6 @@
 import Foundation
 import CoreLocation
 
-/// Swift 6–safe CLLocationManager delegate:
-/// delegate methods are nonisolated; hop to main actor to update @Published state.
 final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
 
@@ -13,6 +11,12 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
         super.init()
         manager.delegate = self
         manager.desiredAccuracy = kCLLocationAccuracyHundredMeters
+
+        // Start immediately if permission already granted
+        authorizationStatus = manager.authorizationStatus
+        if authorizationStatus == .authorizedWhenInUse || authorizationStatus == .authorizedAlways {
+            manager.startUpdatingLocation()
+        }
     }
 
     func requestWhenInUseAuthorization() {
@@ -20,18 +24,22 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
         manager.startUpdatingLocation()
     }
 
-    // MARK: - Delegate
+    // MARK: - CLLocationManagerDelegate
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         Task { @MainActor in
             self.authorizationStatus = manager.authorizationStatus
-            if self.authorizationStatus == .authorizedWhenInUse || self.authorizationStatus == .authorizedAlways {
+            if self.authorizationStatus == .authorizedWhenInUse ||
+               self.authorizationStatus == .authorizedAlways {
                 self.manager.startUpdatingLocation()
             }
         }
     }
 
-    nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    nonisolated func locationManager(
+        _ manager: CLLocationManager,
+        didUpdateLocations locations: [CLLocation]
+    ) {
         Task { @MainActor in
             self.location = locations.last
         }
