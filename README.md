@@ -1,27 +1,60 @@
 # CSSADiscounts
 
-iOS app for McGill CSSA Discount Program.  
-This app helps students and CSSA members easily find and access discounts offered by participating merchants.
+An iOS application for the **McGill CSSA Discount Program**, designed to help students easily discover and access discounts offered by participating merchants around campus.
 
-## Features
-- 🗺️ **Interactive Map** – Displays all participating stores, restaurants, and facilities.
-- 📍 **Location Search + Radius Control** – Enter a postal code or address, then filter within a range (1–50 km).
-- 🎯 **Dynamic Camera & User Location** – Map centers on the user or search results.
-- 🛒 **Category Filters** – Filter merchants by category (Restaurants, Desserts, Life & Entertainment, Shopping, Specials).
-- 📑 **Browse List View** – See merchants with name, category, discount details, and address.
-- 🔎 **Detail View** – Tap a merchant for full discount information.
+The app provides an interactive map, category-based browsing, and detailed merchant pages with directions, contact information, and discount details.
 
-## Tech
-- Built with **Swift** and **Xcode**
-- Uses **CoreLocation** for location services
-- SwiftUI for UI components
+---
 
-## Status
-🚧 Currently in active development.  
-✅ First working version committed.  
+## ✨ Features
 
-## Roadmap
-- [ ] Polish UI/UX
-- [ ] Add merchant images
-- [ ] Integrate backend for live updates
-- [ ] Prepare App Store submission
+- 🗺 **Interactive Map**
+  - Displays nearby participating merchants
+  - Category-based filtering (Restaurants, Desserts & Drinks, Shopping, etc.)
+  - Adjustable radius based on user location
+
+- 📍 **Location-Aware Experience**
+  - Automatically centers on the user’s real-time location
+  - Address and postal code search with live suggestions
+
+- 🏷 **Category-Based Browsing**
+  - Browse merchants in a structured list view
+  - Multi-select category filters
+
+- 🧾 **Merchant Detail Pages**
+  - Discount descriptions
+  - Contact information and hours
+  - One-tap directions via Apple Maps or Google Maps
+  - Embedded web views for menus and external links
+
+---
+
+## 📱 Demo
+
+COMING SOON...
+
+---
+
+## 🛠 Tech Stack
+
+- **Language:** Swift  
+- **UI Framework:** SwiftUI  
+- **Maps:** MapKit  
+- **Location Services:** CoreLocation  
+- **Architecture:** MVVM-style separation (Models / Services / Views)  
+- **Data Source:** Local JSON (community-maintained merchant data)
+
+---
+
+## 🚀 Getting Started
+
+### Requirements
+- macOS with Xcode installed
+- iOS 17+ recommended
+
+### Run Locally
+
+1. Clone the repository:
+2. Open CSSADiscounts.xcode.pro in Xcode
+3. Select a simulator or connected device (is an iOS app)
+4. Build & Run
